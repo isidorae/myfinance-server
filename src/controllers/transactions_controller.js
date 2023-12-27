@@ -1,8 +1,9 @@
 const Transaction = require('../models/transactions_model')
 
+//*********** GENERAL *********** /
 const addExpense = async (req, res) => {
 
-    const {category, title, amount, comment, date, transaction_type, user_id } = req.body
+    const {category, title, amount, comment, date, month, transaction_type, user_id } = req.body
 
     try {
         
@@ -29,6 +30,7 @@ const addExpense = async (req, res) => {
             title,
             amount,
             comment,
+            month,
             date,
             transaction_type,
             user_id
@@ -49,7 +51,7 @@ const addExpense = async (req, res) => {
 
 const addIncome = async (req, res) => {
 
-    const {category, title, amount, comment, date, transaction_type, user_id } = req.body
+    const {category, title, amount, comment, date, month, transaction_type, user_id } = req.body
 
     try {
         
@@ -76,6 +78,7 @@ const addIncome = async (req, res) => {
             title,
             amount,
             comment,
+            month,
             date,
             transaction_type,
             user_id
@@ -94,8 +97,59 @@ const addIncome = async (req, res) => {
     }
 }
 
+const getAllUserTransactions = async (req, res) => {
+    try {
+        const user_transactions = await Transaction.find({
+            user_id: req.params.id
+        })
+
+        if (!user_transactions) {
+            res.status(404).send({
+                message: "user not found"
+            })
+        }
+
+        res.json( {
+            message: "successful retrieve of all transactions",
+            detail: user_transactions
+        })
+    } catch (error) {
+        return res.json({
+            message: "error retrieving all transactions",
+            detail: error.message
+        })
+    }
+}
+
+const getAllUserTransactionsByMonth = async (req, res) => {
+    try {
+        const user_transactions = await Transaction.find({
+            user_id: req.params.id,
+            month: req.params.date
+        })
+
+        if (user_transactions.length === 0) {
+            res.status(404).send({
+                message: "data not found"
+            })
+        }
+
+        res.json( {
+            message: "successful retrieve of all transactions",
+            detail: user_transactions
+        })
+    } catch (error) {
+        return res.json({
+            message: "error retrieving all transactions",
+            detail: error.message
+        })
+    }
+}
+
+
+//*********** SPECIFIC *********** /
 //get expenses or incomes
-const getUserTransactionsByParams = async (req, res) => {
+const getUserTransactions = async (req, res) => {
     try {
         console.log(req.params.id)
         console.log(req.params.transaction_type)
@@ -123,15 +177,15 @@ const getUserTransactionsByParams = async (req, res) => {
 }
 
 //get category of expenses or incomes
-const getUserTransactionsCategoryByParams = async (req, res) => {
+const getUserTransactionsCategory = async (req, res) => {
     try {
         console.log(req.params.id)
         console.log(req.params.category)
-        console.log(req.params.transaction_type)
+        console.log(req.params.transaction)
         const user_expenses = await Transaction.find({
             user_id: req.params.id,
             category: req.params.category,
-            transaction_type: req.params.transaction_type
+            transaction_type: req.params.transaction
         })
         if (!user_expenses) {
             res.status(404).send({
@@ -152,9 +206,45 @@ const getUserTransactionsCategoryByParams = async (req, res) => {
     }
 }
 
+//get category of expenses or incomes
+const getUserTransactionsByMonth = async (req, res) => {
+    try {
+        const id = req.params.id
+        const month = req.params.month
+        const transaction = req.params.transaction_type
+        console.log("Received request:", id, month, transaction);
+        
+        const user_transaction_month = await Transaction.find({
+            month: month,
+            transaction_type: transaction,
+            user_id: id,
+        })
+        console.log("Query result:", user_transaction_month);
+        if (user_transaction_month.length === 0) {
+            res.status(404).send({
+                message: 'data not found'
+            })
+        }
+
+        console.log("Sending successful response.");
+        res.json({
+            message: `successful retrieve of transactions type ${req.params.transaction_type}, month: ${req.params.month},`,
+            detail: user_transaction_month
+        })
+
+    } catch (error) {
+        return res.json({
+            message: `error finding transactions type ${req.params.transaction_type}, month: ${req.params.month}, user: ${req.params.id}`,
+            detail: error.message
+        })
+    }
+}
 
 module.exports =
 { addExpense, addIncome,
- getUserTransactionsByParams,
- getUserTransactionsCategoryByParams
+ getAllUserTransactions,
+ getAllUserTransactionsByMonth,
+ getUserTransactions,
+ getUserTransactionsCategory,
+ getUserTransactionsByMonth 
  }

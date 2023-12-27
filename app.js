@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const morgan = require('morgan')
 require('dotenv').config()
 const router = require('./src/routes/router')
+const cors = require('cors')
 
 const app = express()
 
@@ -12,6 +13,7 @@ const API_URL = process.env.API_URL
 
 app.use(express.json()); //parse json data
 app.use(morgan('tiny'))
+app.use(cors())
 
 app.use(`${API_URL}/`, router)
 
