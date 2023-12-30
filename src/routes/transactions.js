@@ -4,15 +4,11 @@ const router = express.Router()
 const {
     addExpense, addIncome,
     getAllUserTransactions,
-    getAllUserTransactionsByMonth,
-    getUserTransactions,
-    getUserTransactionsByMonth }
+    getUserTransactions,}
     = require('../controllers/transactions_controller')
 
 //specific routes
 router.get('/:transaction_type/:id' , getUserTransactions) //get expenses or incomes from user
-router.get('/month/:date/:id', getAllUserTransactionsByMonth) // get all user transactions
-router.get('/:month/:transaction_type/:id', getUserTransactionsByMonth) //
 
 //general routes
 router.post('/expense', addExpense)
