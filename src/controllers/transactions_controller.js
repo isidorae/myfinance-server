@@ -3,7 +3,7 @@ const Transaction = require('../models/transactions_model')
 //*********** GENERAL *********** /
 const addExpense = async (req, res) => {
 
-    const {category, title, amount, comment, date, month, transaction_type, user_id } = req.body
+    const {category, title, amount, comment, date, transaction_type, user_id } = req.body
 
     try {
         
@@ -30,7 +30,6 @@ const addExpense = async (req, res) => {
             title,
             amount,
             comment,
-            month,
             date,
             transaction_type,
             user_id
@@ -51,7 +50,7 @@ const addExpense = async (req, res) => {
 
 const addIncome = async (req, res) => {
 
-    const {category, title, amount, comment, date, month, transaction_type, user_id } = req.body
+    const {category, title, amount, comment, date, transaction_type, user_id } = req.body
 
     try {
         
@@ -78,7 +77,6 @@ const addIncome = async (req, res) => {
             title,
             amount,
             comment,
-            month,
             date,
             transaction_type,
             user_id
@@ -121,6 +119,29 @@ const getAllUserTransactions = async (req, res) => {
     }
 }
 
+const deleteTransaction = async (req, res) => {
+    try {
+        const transaction = await Transaction.findByIdAndDelete(req.params.id)
+        if (transaction)
+        {
+            return res.json({
+                message: 'transaction successfully deleted',
+                detail: transaction
+            })
+        } else {
+            return res.status(400).send({
+                message: "id not found!",
+                detail: "error 400"
+            })
+        }
+    } catch (error) {
+        return res.status(400).send({
+            message: "id not found!",
+            detail: "error 400"
+        })
+    }
+}
+
 //*********** SPECIFIC *********** /
 //get expenses or incomes
 const getUserTransactions = async (req, res) => {
@@ -152,6 +173,7 @@ const getUserTransactions = async (req, res) => {
 
 module.exports =
 { addExpense, addIncome,
+ deleteTransaction,
  getAllUserTransactions,
  getUserTransactions
  }

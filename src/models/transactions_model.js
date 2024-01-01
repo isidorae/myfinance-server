@@ -7,7 +7,6 @@ const transactionSchema = new mongoose.Schema(
         amount: {type: String, required: true},
         comment: {type: String},
         date: {type: String, required: true},
-        month: {type: String, required: true},
         transaction_type: {type: String, required: true},
         user_id: {type: String, required: true},
     },
