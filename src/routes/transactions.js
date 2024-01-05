@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router()
+const auth = require('../middlewares/validateToken.js')
 
 const {
     addExpense, addIncome,
@@ -9,12 +10,12 @@ const {
     = require('../controllers/transactions_controller')
 
 //specific routes
-router.get('/:transaction_type/:id' , getUserTransactions) //get expenses or incomes from user
+router.get('/:transaction_type/:id', auth, getUserTransactions) //get expenses or incomes from user
 
 //general routes
-router.post('/expense', addExpense)
-router.post('/income', addIncome)
-router.get('/:id', getAllUserTransactions) // get all user transactions
-router.delete('/:id', deleteTransaction)
+router.post('/expense', auth, addExpense)
+router.post('/income', auth, addIncome)
+router.get('/:id', auth, getAllUserTransactions) // get all user transactions
+router.delete('/:id', auth, deleteTransaction)
 
 module.exports = router;

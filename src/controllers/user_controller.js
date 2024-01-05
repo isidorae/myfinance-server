@@ -23,6 +23,7 @@ const getUser = async(req, res) => {
 
 const registerUser = async(req,res) => {
     const { username, password } = req.body
+    console.log(username, password)
     try {
         const usernameExists = await User.findOne({ username })
         if (usernameExists) {
@@ -32,6 +33,7 @@ const registerUser = async(req,res) => {
         }
 
         const passwordHash = await bcrypt.hash(password, 10)
+        console.log(passwordHash)
 
         const user = await new User({
             username,
