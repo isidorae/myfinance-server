@@ -25,10 +25,23 @@ const registerUser = async(req,res) => {
     const { username, password } = req.body
     console.log(username, password)
     try {
+
+        if (username === "" || password === "") {
+            return res.status(400).json({
+                message: "debes rellenar todos los campos."
+            })
+        }
+
         const usernameExists = await User.findOne({ username })
         if (usernameExists) {
             return res.status(400).json({
                 message: 'nombre de usuario ya registrado'
+            })
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({
+                message: 'contraseña debe ser mayor a 6 caracteres.'
             })
         }
 
@@ -74,6 +87,13 @@ const loginUser = async(req,res) => {
     const { username, password } = req.body
 
     try {
+
+        if (username === "" || password === "") {
+            return res.status(400).json({
+                message: "debes ingresar usuario y contraseña."
+            })
+        }
+
         const userFound = await User.findOne({ username })
         if (!userFound) {
             return res.status(400).json({
